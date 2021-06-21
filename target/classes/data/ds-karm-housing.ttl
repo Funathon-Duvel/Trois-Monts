@@ -1,0 +1,26 @@
+@prefix wgs:   <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix duvel: <https://duvel.dev.insee.io/housing> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<duvel:A0001>  a                 "duvel:Housing" ;
+        skos:prefLabel           "Chez wam" ;
+        <rdf:number_of_reviews>  "23" ;
+        <rdf:price>              "78"^^xsd:int ;
+        <rdfs:locatedIn>         "http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374" ;
+        <wgs:lat>                "2.3563778"^^xsd:float ;
+        <wgs:long>               "48.86529"^^xsd:float .
+
+<https://duvel.dev.insee.io/housing/dataset>
+        a           <http://purl.org/linked-data/cube#DataSet> ;
+        rdfs:label  "Housing - Housing extracted from Inside Airbnb db"@en , "Housing - Logements issues de la base Inside Airbnb"@fr .
+
+<duvel:A0002>  a                 "duvel:Housing" ;
+        skos:prefLabel           "Mon voisin" ;
+        <rdf:number_of_reviews>  "10" ;
+        <rdf:price>              "85"^^xsd:int ;
+        <rdfs:locatedIn>         "http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374" ;
+        <wgs:lat>                "2.3570778"^^xsd:float ;
+        <wgs:long>               "48.866093"^^xsd:float .
