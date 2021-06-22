@@ -15,12 +15,14 @@ public class Configuration {
 
 	/** Name of the CSV file containing the Airbnb data
 	 * The source file is on Kubernetes S3 after Karmeliete pipilne execution */
-	public final static String KARMELIETE_FILE_NAME = "src/main/resources/data/karmeliete-output.csv";
+	public final static String KARMELIETE_FILE_NAME = "src/main/resources/data/paris.csv";
 
 	public static final String DUVEL_SPARQL_ENDPOINT = "http://duvel.dev.insee.io/sparql";
-	public static final String DUVEL_HOUSING_NAMESPACE_URI = "https://duvel.dev.insee.io/housing";
+	public static final String DUVEL_HOUSING_NAMESPACE_URI = "https://duvel.dev.insee.io/housing#";
 	public static final String DATASET_DUVEL_HOUSING_NAMESPACE_URI = "https://duvel.dev.insee.io/housing/dataset";
 	public static final String WGS84_NAMESPACE_URI = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+	public static final String GN_NAMESPACE_URI = "http://www.geonames.org/ontology#";
+	public static final String GEO_NAMESPACE_URI = "http://www.opengis.net/ont/geosparql#";
 
 	public final static int FIRST_DATA_LINE_INDEX = 2;
 

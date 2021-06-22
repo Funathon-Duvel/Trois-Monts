@@ -53,7 +53,7 @@ public class DataSetModelMaker {
 		Model karmModel = null;
 		logger.info("Creating Jena model for KARMELIET data set");
 		karmModel = getDataSetModel(true);
-		RDFDataMgr.write(new FileOutputStream("src/main/resources/data/ds-karm-housing.ttl"), karmModel, Lang.TURTLE);
+		RDFDataMgr.write(new FileOutputStream("src/main/resources/data/ds-karm-housing-paris.ttl"), karmModel, Lang.TURTLE);
 		karmModel.close();
 
 	}
@@ -72,24 +72,17 @@ public class DataSetModelMaker {
 		karmModel.setNsPrefix("xsd", XSD.getURI());
 		karmModel.setNsPrefix("skos", SKOS.getURI());
 		karmModel.setNsPrefix("wgs", Configuration.WGS84_NAMESPACE_URI);
+		karmModel.setNsPrefix("gn", Configuration.GN_NAMESPACE_URI);
 		karmModel.setNsPrefix("duvel", Configuration.DUVEL_HOUSING_NAMESPACE_URI);
+		karmModel.setNsPrefix("geo", Configuration.GEO_NAMESPACE_URI);
+
 
 		Property wgsLong = karmModel.createProperty("wgs:long");
 		Property wgsLat = karmModel.createProperty("wgs:lat");
 		Property priceProperty = karmModel.createProperty("rdf:price");
 		Property nbReviewsProperty = karmModel.createProperty("rdf:number_of_reviews");
-		Property locatedInProperty = karmModel.createProperty("rdfs:locatedIn");
-
-		// Creation of the data set
-		Resource karmDataSet = karmModel.createResource(Configuration.DATASET_DUVEL_HOUSING_NAMESPACE_URI, DataCubeOntology.DataSet);
-		if (createDS) {
-			String label = "Housing - Logements issues de la base Inside Airbnb";
-			karmDataSet.addProperty(RDFS.label, karmModel.createLiteral(label, "fr"));
-			label = "Housing - Housing extracted from Inside Airbnb db";
-			karmDataSet.addProperty(RDFS.label, karmModel.createLiteral(label, "en"));
-			logger.info("Creating Data Set " + karmDataSet.getURI());
-		}
-
+		Property locatedInProperty = karmModel.createProperty("gn:locatedIn");
+		Property geoAsWKTProperty = karmModel.createProperty("geo:asWKT");
 
 		String[] lineInArray = reader.readNext();
 		//id;name;latitude;longitude;price;number_of_reviews;city
@@ -102,8 +95,9 @@ public class DataSetModelMaker {
 				String id = lineInArray[0];
 				Resource housingResources = karmModel.createResource("duvel:" + id);
 
+				Resource housingOnject = karmModel.createResource("duvel:Housing");
 				// RDF type - duvel:A0001 ; rdf:type ; duvel:Housing
-				housingResources.addProperty(RDF.type, "duvel:Housing");
+				housingResources.addProperty(RDF.type,housingOnject);
 
 				// name - duvel:A0001 ; skos:prefLabel ; "Chez wam"
 				String name = lineInArray[1];
@@ -121,8 +115,8 @@ public class DataSetModelMaker {
 
 				// price
 				String price = lineInArray[4];
-				int priceInt = Integer.parseInt(price);
-				housingResources.addProperty(priceProperty, karmModel.createTypedLiteral(priceInt));
+				Float priceFloat = Float.parseFloat(price);
+				housingResources.addProperty(priceProperty, karmModel.createTypedLiteral(priceFloat));
 
 				// number_of_reviews
 				String nbReviews = lineInArray[5];
@@ -133,8 +127,17 @@ public class DataSetModelMaker {
 				if (codeGeo.equals("75056")) {
 					// Paris  : http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374
 					String idParis = "http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374";
-					housingResources.addProperty(locatedInProperty, idParis);
+					Resource locatingResources = karmModel.createResource(idParis);
+					housingResources.addProperty(locatedInProperty, locatingResources);
 				}
+
+				// point
+				//http://www.opengis.net/ont/geosparql#asWKT	"POINT(997322 6744741.1)"^^http://www.opengis.net/ont/geosparql#wktLiteral
+				//String asWKT = "POINT("+lat+" "+longi+")";
+				String asWKT = String.format("POINT(%s %s)", lat, longi);
+
+				housingResources.addProperty(geoAsWKTProperty, karmModel.createTypedLiteral(asWKT,"geo:wktLiteral"));
+
 			}
 		}
 
