@@ -1,9 +1,8 @@
-name: Troismonts
+name: Trois-Monts CI
 
 on: push
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
