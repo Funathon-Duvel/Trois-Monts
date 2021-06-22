@@ -15,6 +15,7 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
+
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
@@ -44,8 +45,20 @@ public class DataSetModelMaker {
 
 	public static void main(String[] args) throws Exception {
 
+
+		String inputFile = Configuration.KARMELIETE_FILE_NAME;
+
+		String outputFile = "src/main/resources/data/ds-karm-housing-paris.ttl";
+
+		if(System.getenv("INPUT_FILE")!=null){
+			inputFile = System.getenv("INPUT_FILE");;
+		}
+		if(System.getenv("OUTPUT_FILE")!=null){
+			inputFile = System.getenv("OUTPUT_FILE");;
+		}
+
 		CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-		reader = new CSVReaderBuilder(new FileReader(Configuration.KARMELIETE_FILE_NAME))
+		reader = new CSVReaderBuilder(new FileReader(inputFile))
 				.withCSVParser(parser)
 				.build();
 
@@ -53,7 +66,7 @@ public class DataSetModelMaker {
 		Model karmModel = null;
 		logger.info("Creating Jena model for KARMELIET data set");
 		karmModel = getDataSetModel(true);
-		RDFDataMgr.write(new FileOutputStream("src/main/resources/data/ds-karm-housing-paris.ttl"), karmModel, Lang.TURTLE);
+		RDFDataMgr.write(new FileOutputStream(outputFile), karmModel, Lang.TURTLE);
 		karmModel.close();
 
 	}
