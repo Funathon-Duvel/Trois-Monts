@@ -1,0 +1,40 @@
+name: Chimay
+
+on: push
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build with Maven
+        run: mvn install --file pom.xml
+      - name: Upload jars
+        uses: actions/upload-artifact@v2
+        with:
+          name: target
+          path: target
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download build
+        id: download
+        uses: actions/download-artifact@v2
+        with:
+          name: target
+          path: target
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: funathonduvel/troismonts
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          tags: latest
