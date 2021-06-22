@@ -23,9 +23,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
-import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,8 +79,6 @@ public class DataSetModelMaker {
 
 		Model karmModel = ModelFactory.createDefaultModel();
 		karmModel.setNsPrefix("rdf", RDF.getURI());
-		karmModel.setNsPrefix("rdfs", RDFS.getURI());
-		karmModel.setNsPrefix("xsd", XSD.getURI());
 		karmModel.setNsPrefix("skos", SKOS.getURI());
 		karmModel.setNsPrefix("wgs", Configuration.WGS84_NAMESPACE_URI);
 		karmModel.setNsPrefix("gn", Configuration.GN_NAMESPACE_URI);
@@ -91,12 +87,12 @@ public class DataSetModelMaker {
 
 
 
-		Property wgsLong = karmModel.createProperty("wgs:long");
-		Property wgsLat = karmModel.createProperty("wgs:lat");
-		Property priceProperty = karmModel.createProperty("rdf:price");
-		Property nbReviewsProperty = karmModel.createProperty("rdf:number_of_reviews");
-		Property locatedInProperty = karmModel.createProperty("gn:locatedIn");
-		Property geoAsWKTProperty = karmModel.createProperty("geo:asWKT");
+		Property wgsLong = karmModel.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#long");
+		Property wgsLat = karmModel.createProperty("http://www.w3.org/2003/01/geo/wgs84_pos#lat");
+		Property priceProperty = karmModel.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#price");
+		Property nbReviewsProperty = karmModel.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#number_of_reviews");
+		Property locatedInProperty = karmModel.createProperty("http://www.geonames.org/ontology#locatedIn");
+		Property geoAsWKTProperty = karmModel.createProperty("http://www.opengis.net/ont/geosparql#asWKT");
 
 		String[] lineInArray = reader.readNext();
 		//id;name;latitude;longitude;price;number_of_reviews;city
@@ -107,7 +103,7 @@ public class DataSetModelMaker {
 			if(lineInArray.length>1) {
 				// id
 				String id = lineInArray[0];
-				Resource housingResources = karmModel.createResource("duvel:" + id);
+				Resource housingResources = karmModel.createResource("https://duvel.dev.insee.io/housing#" + id);
 
 				Resource housingOnject = karmModel.createResource("https://duvel.dev.insee.io/housing#Housing");
 				// RDF type - duvel:A0001 ; rdf:type ; duvel:Housing
@@ -137,20 +133,20 @@ public class DataSetModelMaker {
 				housingResources.addProperty(nbReviewsProperty, nbReviews);
 
 				// city
-				String codeGeo = lineInArray[6]; //TODO get the id on id.insee.fr sparql endpoint
-				if (codeGeo.equals("75056")) {
-					// Paris  : http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374
-					String idParis = "http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374";
-					Resource locatingResources = karmModel.createResource(idParis);
-					housingResources.addProperty(locatedInProperty, locatingResources);
-				}
+				// String codeGeo = lineInArray[6]; //TODO get the id on id.insee.fr sparql endpoint
+				// if (codeGeo.equals("75056")) {
+				// 	// Paris  : http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374
+				// 	String idParis = "http://id.insee.fr/geo/commune/6c57acff-e2a9-4304-afc4-10b34d273374";
+				// 	Resource locatingResources = karmModel.createResource(idParis);
+				// 	housingResources.addProperty(locatedInProperty, locatingResources);
+				// }
 
 				// point
 				//http://www.opengis.net/ont/geosparql#asWKT	"POINT(997322 6744741.1)"^^http://www.opengis.net/ont/geosparql#wktLiteral
 				//String asWKT = "POINT("+lat+" "+longi+")";
-				String asWKT = String.format("POINT(%s %s)", lat, longi);
+				// String asWKT = String.format("POINT(%s %s)", lat, longi);
 
-				housingResources.addProperty(geoAsWKTProperty, karmModel.createTypedLiteral(asWKT,"geo:wktLiteral"));
+				// housingResources.addProperty(geoAsWKTProperty, karmModel.createTypedLiteral(asWKT,"geo:wktLiteral"));
 
 			}
 		}
