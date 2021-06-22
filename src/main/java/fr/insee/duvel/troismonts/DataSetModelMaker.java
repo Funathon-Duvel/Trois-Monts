@@ -90,6 +90,7 @@ public class DataSetModelMaker {
 		karmModel.setNsPrefix("geo", Configuration.GEO_NAMESPACE_URI);
 
 
+
 		Property wgsLong = karmModel.createProperty("wgs:long");
 		Property wgsLat = karmModel.createProperty("wgs:lat");
 		Property priceProperty = karmModel.createProperty("rdf:price");
@@ -108,7 +109,7 @@ public class DataSetModelMaker {
 				String id = lineInArray[0];
 				Resource housingResources = karmModel.createResource("duvel:" + id);
 
-				Resource housingOnject = karmModel.createResource("duvel:Housing");
+				Resource housingOnject = karmModel.createResource("https://duvel.dev.insee.io/housing#Housing");
 				// RDF type - duvel:A0001 ; rdf:type ; duvel:Housing
 				housingResources.addProperty(RDF.type,housingOnject);
 
