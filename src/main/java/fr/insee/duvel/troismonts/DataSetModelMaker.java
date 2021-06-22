@@ -54,7 +54,7 @@ public class DataSetModelMaker {
 			inputFile = System.getenv("INPUT_FILE");;
 		}
 		if(System.getenv("OUTPUT_FILE")!=null){
-			inputFile = System.getenv("OUTPUT_FILE");;
+			outputFile = System.getenv("OUTPUT_FILE");;
 		}
 
 		CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
